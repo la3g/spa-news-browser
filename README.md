@@ -55,10 +55,10 @@ cp .env.example .env
 # Edit .env with your actual values
 ```
 
-Required variables:
-- `GEMINI_API_KEY` - Your Google Gemini API key
-- `SUPABASE_URL` - Your Supabase project URL
-- `SUPABASE_ANON_KEY` - Your Supabase anonymous key
+**Backend Configuration (`.env`)** - Used by Lambda function and deployment scripts:
+- `GEMINI_API_KEY` - Your Google Gemini API key (for Lambda backend)
+- `SUPABASE_URL` - Your Supabase project URL (for Lambda backend)
+- `SUPABASE_ANON_KEY` - Your Supabase anonymous key (for Lambda backend)
 - `AWS_PROFILE` - Your AWS profile name (optional, can pass as argument)
 - `AWS_REGION` - AWS region (optional, defaults to us-east-1)
 
@@ -68,6 +68,22 @@ Required variables:
 cp config.js.example config.js
 # Edit config.js with your actual Supabase and Gemini API keys
 ```
+
+**Frontend Configuration (`config.js`)** - Used by the browser SPA:
+- `SUPABASE_URL` - Your Supabase project URL (for frontend direct access)
+- `SUPABASE_ANON_KEY` - Your Supabase anonymous key (for frontend direct access)
+- `GEMINI_API_KEY` - Your Google Gemini API key (for frontend direct access)
+
+**Why Two Configuration Files?**
+
+- **`.env`** - Used by the **Lambda backend** (server-side). The `deploy.sh` script reads this file and sets these as Lambda environment variables. Lambda functions use `process.env.*` to access these values.
+
+- **`config.js`** - Used by the **browser frontend** (client-side). Browsers cannot read `.env` files, so JavaScript configuration must be in a `.js` file. This allows you to:
+  - **Test the frontend locally** without deploying Lambda
+  - **Develop and debug** the SPA independently
+  - **Use direct API calls** to Gemini and Supabase from the browser
+
+**Note:** In production, you can route all API calls through Lambda (which would only require Supabase keys in `config.js`), but keeping Gemini API key in `config.js` enables local testing and development without Lambda deployment.
 
 ### 4. Make Scripts Executable
 
