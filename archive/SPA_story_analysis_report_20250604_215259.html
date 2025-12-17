@@ -1,0 +1,1493 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Story Analysis Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .subtitle {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .story-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px 0;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .story-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .story-card.has-inconsistencies {
+            border-left-color: #e74c3c;
+            background: #fff5f5;
+        }
+        
+        .story-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .story-title {
+            color: #2c3e50;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .story-date {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .inconsistency-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        
+        .articles-list {
+            margin: 15px 0;
+        }
+        
+        .article-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .article-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .article-meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .article-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+        
+        .article-link:hover {
+            text-decoration: underline;
+        }
+        
+        .summary-section, .inconsistencies-section {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .summary-section {
+            background: #e8f5e8;
+            border: 1px solid #d4edda;
+        }
+        
+        .inconsistencies-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .section-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .summary-text {
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        
+        .inconsistency-item {
+            background: #fff;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border-left: 3px solid #e74c3c;
+        }
+        
+        .stats {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            display: inline-block;
+            margin: 0 20px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .toggle-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin: 5px;
+        }
+        
+        .toggle-button:hover {
+            background: #5a6fd8;
+        }
+        
+        .collapsible {
+            display: none;
+        }
+        
+        .collapsible.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📰 News Story Analysis Report</h1>
+            <div class="subtitle">
+                Analysis Period: May 5-11, 2025 | Generated on June 04, 2025 at 09:52 PM
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">Stories Identified</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">65</div>
+                    <div class="stat-label">Total Articles</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Stories with Inconsistencies</div>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <h2 class="story-title">Criticism of President Chaves&#x27;s performance and handling of various issues.</h2>
+                    <div>
+                        <span class="story-date">📅 2025-05-05</span>
+                        
+                    </div>
+                </div>
+                
+                <button class="toggle-button" onclick="toggleSection('articles-1')">
+                    👁️ Show/Hide Articles (11)
+                </button>
+                <button class="toggle-button" onclick="toggleSection('summary-1')">
+                    📄 Show/Hide Summary
+                </button>
+
+                <div id="articles-1" class="collapsible">
+                    <div class="articles-list">
+
+                        <div class="article-item">
+                            <div class="article-title">Contrario a lo que asegura Chaves, el desempleo ha subido</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-05T22:00 |
+                                Author: Alexánder Ramírez
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/contrario-a-lo-que-asegura-chaves-el-desempleo-ha-subido/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Chaves afirma que combate el crimen mientras su gestión acumula récords de violencia</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-05T22:12 |
+                                Author: Carlos Mora
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/chaves-afirma-que-combate-el-crimen-mientras-su-gestion-acumula-records-de-violencia/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Chaves omitió hablar de caída en el ingreso de turistas</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-05T22:17 |
+                                Author: Alexánder Ramírez
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/chaves-omitio-hablar-de-caida-en-el-ingreso-de-turistas/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Lo que no dice Chaves del costo de la vida en el país</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-05T22:25 |
+                                Author: Alexánder Ramírez
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/lo-que-no-dice-chaves-del-costo-de-la-vida-en-el-pais/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Datos de inversión extranjera en 2024 contradicen a Chaves</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-05T22:51 |
+                                Author: Alexánder Ramírez
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/datos-de-inversion-extranjera-en-2024-contradicen-a-chaves/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Diputados lanzan fuertes reclamos a Chaves: “Vergüenza hablar de justicia pero no enfrentarla”</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-05T22:59 |
+                                Author: Michelle Campos
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/diputados-lanzan-fuertes-reclamos-a-chaves-verguenza-hablar-de-justicia-pero-no-enfrentarla/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">En su discurso Chaves “se olvida” de los 2.541 homicidios que han ocurrido bajo su gestión</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T00:45 |
+                                Author: José Adelio Murillo
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/en-su-discurso-chaves-se-olvida-de-los-2-541-homicidios-que-han-ocurrido-bajo-su-gestion/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Chaves presume logros sin detallar resultados en su tercer informe de labores</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T01:21 |
+                                Author: Michelle Campos
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/chaves-presume-logros-sin-detallar-resultados-en-su-tercer-informe-de-labores/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Diputados dicen que Gobierno está en campaña política</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-06T00:30 |
+                                Author: Aaron Chinchilla
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/diputados-dicen-que-gobierno-esta-en-campana-politica/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">“Mientras él goza viendo Netflix, nosotros sufrimos”</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-06T00:30 |
+                                Author: Wilmer Madrigal
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/mientras-el-goza-viendo-netflix-nosotros-sufrimos/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Pancartas incomodan discurso de Chaves</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-06T00:30 |
+                                Author: Daniel Suarez
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/pancartas-incomodan-discurso-de-chaves/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="summary-1" class="collapsible">
+                    <div class="summary-section">
+                        <div class="section-title">📋 Story Summary</div>
+                        <div class="summary-text">
+                            President Rodrigo Chaves of Costa Rica delivered his third annual report to the Legislative Assembly.  The report highlighted various achievements in areas such as tourism, economic growth, and security. However, several articles criticize Chaves&#x27; presentation, pointing out inconsistencies between his claims and available data.  They detail discrepancies concerning unemployment rates, crime statistics (showing a significant increase in homicides under his presidency), a drop in tourist income, and the rising cost of living, particularly food prices.  Opposition lawmakers protested during his speech, displaying signs highlighting these perceived failures and lack of accountability.
+The criticism centers on Chaves&#x27; positive portrayal of his administration&#x27;s performance, which contrasts sharply with independent data indicating a worsening economic and social climate.  Articles detail the rise in unemployment despite Chaves&#x27; assertions to the contrary, the dramatic increase in homicides, the decline in tourist visits, and the soaring cost of essential goods.  The articles collectively illustrate a significant gap between the president&#x27;s optimistic assessment and the reality experienced by many Costa Ricans.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <h2 class="story-title">Inhabilitation of Santos by the Licensing Committee.</h2>
+                    <div>
+                        <span class="story-date">📅 2025-05-05</span>
+                        
+                    </div>
+                </div>
+                
+                <button class="toggle-button" onclick="toggleSection('articles-3')">
+                    👁️ Show/Hide Articles (2)
+                </button>
+                <button class="toggle-button" onclick="toggleSection('summary-3')">
+                    📄 Show/Hide Summary
+                </button>
+
+                <div id="articles-3" class="collapsible">
+                    <div class="articles-list">
+
+                        <div class="article-item">
+                            <div class="article-title">Santos en problemas: Esto decidió el Comité de Licencias</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-05T22:07 |
+                                Author: Dinia Vargas
+                            </div>
+                            <a href="https://www.crhoy.com/deportes/santos-en-problemas-esto-decidio-el-comite-de-licencias/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">¿Por qué el Comité de Licencias inhabilitó a Santos?</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-05T23:16 |
+                                Author: Dinia Vargas
+                            </div>
+                            <a href="https://www.crhoy.com/deportes/por-que-el-comite-de-licencias-inhabilito-a-santos/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="summary-3" class="collapsible">
+                    <div class="summary-section">
+                        <div class="section-title">📋 Story Summary</div>
+                        <div class="summary-text">
+                            Both articles from crhoy.com report on the revocation of Santos de Guápiles&#x27; professional club license by the Costa Rican Football Federation&#x27;s Licensing Committee.  The decision, announced on May 5th, 2025, stems from an inconsistency found in the financial criteria used to initially grant the license.  As a result, Santos is unable to participate in matchday 22 of the Clausura 2025 tournament, with their opponent, San Carlos, awarded the victory by default.  The club has three business days to appeal the decision, although the sanction remains in effect pending the appeal.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="story-card has-inconsistencies">
+                <div class="story-header">
+                    <h2 class="story-title">Disappearance and death of Rashab García.</h2>
+                    <div>
+                        <span class="story-date">📅 2025-05-05</span>
+                        <span class="inconsistency-badge">⚠️ Has Inconsistencies</span>
+                    </div>
+                </div>
+                
+                <button class="toggle-button" onclick="toggleSection('articles-2')">
+                    👁️ Show/Hide Articles (4)
+                </button>
+                <button class="toggle-button" onclick="toggleSection('summary-2')">
+                    📄 Show/Hide Summary
+                </button>
+
+                <button class="toggle-button" onclick="toggleSection('inconsistencies-2')">
+                    ⚠️ Show/Hide Inconsistencies
+                </button>
+
+                <div id="articles-2" class="collapsible">
+                    <div class="articles-list">
+
+                        <div class="article-item">
+                            <div class="article-title">Confirman rastros de sangre en el vehículo de Rashab García, joven desaparecida en Orotina</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-05T22:43 |
+                                Author: Rebeca Ballestero
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/confirman-rastros-de-sangre-en-el-vehiculo-de-rashab-garcia-joven-desaparecida-en-orotina/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Inicia audiencia por caso Rashab García: Estos son los nuevos hallazgos</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-06T10:14 |
+                                Author: Byron Agüero Ruiz
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/inicia-audiencia-por-caso-rashab-garcia-estos-son-los-nuevos-hallazgos/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Sangre en los carros y ropa decomisada: nueva evidencia en el caso Rashab García y Nelson Pavón</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T15:35 |
+                                Author: Rebeca Ballestero
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/sangre-en-los-carros-y-ropa-decomisada-nueva-evidencia-en-el-caso-rashab-garcia-y-nelson-pavon/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Fiscalía pide un año de prisión preventiva contra novio de Rashab</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T19:07 |
+                                Author: José Adelio Murillo
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/fiscalia-pide-un-ano-de-prision-preventiva-contra-novio-de-rashab/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="summary-2" class="collapsible">
+                    <div class="summary-section">
+                        <div class="section-title">📋 Story Summary</div>
+                        <div class="summary-text">
+                            The disappearance of 32-year-old Rashab García Valverde and her friend, Nelson Pavón Largaespada, is being investigated as a possible double homicide.  Authorities have found evidence suggesting the pair were killed, including traces of blood in Rashab&#x27;s Hyundai Tucson and her boyfriend&#x27;s high-end RAM truck.  Further evidence includes small bones and burn marks found in Orotina, and blood stains, removed floorboards, and signs of recent cleaning in the couple&#x27;s shared home.  Several individuals, including Rashab&#x27;s boyfriend, Manfred Bustos Mata, and his bodyguards, are under investigation.
+The investigation is ongoing, with a court hearing underway to determine preventative measures against the suspects.  The Fiscalía has requested a year of preventative prison for Bustos Mata and two of his employees.  The discovery of blood in the vehicles, along with clothing and metallic objects, is a major development in the case, providing crucial forensic evidence.  Authorities are working to analyze the evidence and determine if the blood belongs to the missing individuals.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="inconsistencies-2" class="collapsible">
+                    <div class="inconsistencies-section">
+                        <div class="section-title">⚠️ Inconsistencies Found</div>
+
+                        <div class="inconsistency-item">
+                            Minor discrepancies exist in the precise details of the timelines and the exact number of individuals investigated (some articles mention 5, others imply fewer directly involved).  While not contradictory, these slight variations may stem from ongoing investigation updates and the different news outlets reporting on various aspects of the case at different times.
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <h2 class="story-title">Conclave to elect the new Pope.</h2>
+                    <div>
+                        <span class="story-date">📅 2025-05-06</span>
+                        
+                    </div>
+                </div>
+                
+                <button class="toggle-button" onclick="toggleSection('articles-8')">
+                    👁️ Show/Hide Articles (2)
+                </button>
+                <button class="toggle-button" onclick="toggleSection('summary-8')">
+                    📄 Show/Hide Summary
+                </button>
+
+                <div id="articles-8" class="collapsible">
+                    <div class="articles-list">
+
+                        <div class="article-item">
+                            <div class="article-title">Cardenales listos para cónclave</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-06T00:30 |
+                                Author: Redacción
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/cardenales-listos-para-conclave/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">La historia detrás del traje del Papa</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-06T00:30 |
+                                Author: Redacción
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/la-historia-detras-del-traje-del-papa/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="summary-8" class="collapsible">
+                    <div class="summary-section">
+                        <div class="section-title">📋 Story Summary</div>
+                        <div class="summary-text">
+                            Both articles from Diario Extra report on the upcoming papal conclave in Vatican City to elect the successor to Pope Francis.  Article 1 focuses on the arrival of 133 cardinal electors from 70 countries in Rome to participate in the conclave, highlighting the diverse representation and the anticipation surrounding the election of a new pope.  The article mentions discussions among cardinals about the qualities of the next pope, emphasizing a desire for someone connected to the lives of ordinary people.
+
+Article 2 shifts the focus to the preparation of the papal vestments for the new pope.  It describes the competition between two Roman tailors, Gammarelli and Mancinelli, for the honor of outfitting the new pontiff.  Gammarelli, the traditional tailor, was unexpectedly bypassed by the Vatican, leaving Mancinelli to prepare three vestments in different sizes, anticipating the need for a quick change after the election.  This article underscores the logistical preparations underway alongside the spiritual and political aspects of the conclave.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="story-card has-inconsistencies">
+                <div class="story-header">
+                    <h2 class="story-title">Large drug seizure in Costa Rica.</h2>
+                    <div>
+                        <span class="story-date">📅 2025-05-06</span>
+                        <span class="inconsistency-badge">⚠️ Has Inconsistencies</span>
+                    </div>
+                </div>
+                
+                <button class="toggle-button" onclick="toggleSection('articles-5')">
+                    👁️ Show/Hide Articles (4)
+                </button>
+                <button class="toggle-button" onclick="toggleSection('summary-5')">
+                    📄 Show/Hide Summary
+                </button>
+
+                <button class="toggle-button" onclick="toggleSection('inconsistencies-5')">
+                    ⚠️ Show/Hide Inconsistencies
+                </button>
+
+                <div id="articles-5" class="collapsible">
+                    <div class="articles-list">
+
+                        <div class="article-item">
+                            <div class="article-title">Cartel de Sinaloa podría estar detrás del mayor cargamento de droga sintética decomisado en Costa Rica</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T03:37 |
+                                Author: José Adelio Murillo
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/cartel-de-sinaloa-podria-estar-detras-del-mayor-cargamento-de-droga-sintetica-decomisado-en-costa-rica/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Decomiso de 48 kilos de potente droga se logró en pocos días gracias a coordinación Fiscalía-DEA</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T02:40 |
+                                Author: José Adelio Murillo
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/decomiso-de-48-kilos-de-potente-droga-se-logro-en-pocos-dias-gracias-a-coordinacion-fiscalia-dea/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Decomisan 48 kilos de droga sintética en el centro de Tibás</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T00:57 |
+                                Author: Mauricio León
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/decomisan-48-kilos-de-droga-sintetica-en-el-centro-de-tibas/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Cartel de Sinaloa podría estar detrás del mayor cargamento de droga sintética decomisado en Costa Rica</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T03:37 |
+                                Author: José Adelio Murillo
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/cartel-de-sinaloa-podria-estar-detras-del-mayor-cargamento-de-droga-sintetica-decomisado-en-costa-rica/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="summary-5" class="collapsible">
+                    <div class="summary-section">
+                        <div class="section-title">📋 Story Summary</div>
+                        <div class="summary-text">
+                            Costa Rican authorities made the largest-ever seizure of synthetic drugs in the country, confiscating 48 kilograms of methamphetamine in Tibás and San Francisco de Dos Ríos.  The operation, a collaboration between the Costa Rican Fiscalía Adjunta Especializada en Delincuencia Organizada (FAEDO) and the DEA, involved an undercover sting operation that began with a smaller purchase and culminated in the seizure of the larger shipment.  Three men, including a Colombian national, were apprehended.
+The investigation is ongoing, but authorities suspect the involvement of the Sinaloa Cartel due to the nature of the drugs and the Colombian connection. While the precise origin of the drugs remains undetermined, the possibility of Mexican origins (specifically through the Sinaloa Cartel) is being heavily investigated alongside other potential sources.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="inconsistencies-5" class="collapsible">
+                    <div class="inconsistencies-section">
+                        <div class="section-title">⚠️ Inconsistencies Found</div>
+
+                        <div class="inconsistency-item">
+                            Article 3 mentions the arrests took place in &quot;the center of Tibás&quot;, while Article 2 specifies Tibás and San Francisco de Dos Ríos. This may be a minor geographical detail discrepancy.
+                        </div>
+
+                        <div class="inconsistency-item">
+                            Articles vary slightly in describing the timeline; some mention specific dates for the undercover operation and purchase while others focus on the overall operation&#x27;s rapid timeframe.
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="story-card has-inconsistencies">
+                <div class="story-header">
+                    <h2 class="story-title">Search for missing adult in Alajuela.</h2>
+                    <div>
+                        <span class="story-date">📅 2025-05-06</span>
+                        <span class="inconsistency-badge">⚠️ Has Inconsistencies</span>
+                    </div>
+                </div>
+                
+                <button class="toggle-button" onclick="toggleSection('articles-4')">
+                    👁️ Show/Hide Articles (7)
+                </button>
+                <button class="toggle-button" onclick="toggleSection('summary-4')">
+                    📄 Show/Hide Summary
+                </button>
+
+                <button class="toggle-button" onclick="toggleSection('inconsistencies-4')">
+                    ⚠️ Show/Hide Inconsistencies
+                </button>
+
+                <div id="articles-4" class="collapsible">
+                    <div class="articles-list">
+
+                        <div class="article-item">
+                            <div class="article-title">Buscan a adulto mayor que cayó a río en Alajuela</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T04:42 |
+                                Author: Erick Murillo
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/buscan-a-adulto-mayor-que-cayo-a-rio-en-alajuela/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Video: Cruz Roja busca adulto mayor que cayó a río en Carrizal</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-06T05:52 |
+                                Author: Fabiana Conejo
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/video-cruz-roja-busca-adulto-mayor-que-cayo-a-rio-en-carrizal/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Encuentran con vida a adulto mayor que cayó a un río en Carrizal</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-06T08:23 |
+                                Author: Fabiana Conejo
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/encuentran-con-vida-a-adulto-mayor-que-cayo-a-un-rio-en-carrizal/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Retoman búsqueda de adulto mayor que cayó a un río en Alajuela</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T12:24 |
+                                Author: Johan Rojas
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/retoman-busqueda-de-adulto-mayor-que-cayo-a-un-rio-en-alajuela/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Estas son las lesiones que presentaba el adulto mayor extraviado en Carrizal</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T16:46 |
+                                Author: Johan Rojas
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/estas-son-las-lesiones-que-presentaba-el-adulto-mayor-extraviado-en-carrizal/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Encuentran con vida a adulto mayor que estaba extraviado en montaña en Alajuela</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T14:21 |
+                                Author: Johan Rojas
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/encuentran-con-vida-a-adulto-mayor-que-estaba-extraviado-en-montana-en-alajuela/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Wall Street abre con caídas a la espera de novedades comerciales</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T14:56 |
+                                Author: Agencia
+                            </div>
+                            <a href="https://www.crhoy.com/mundo/wall-street-abre-con-caidas-a-la-espera-de-novedades-comerciales/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="summary-4" class="collapsible">
+                    <div class="summary-section">
+                        <div class="section-title">📋 Story Summary</div>
+                        <div class="summary-text">
+                            On Monday evening, an 80-year-old man fell down a slope near a river in Alto Pavas de Carrizal, Alajuela, Costa Rica.  The Cruz Roja Costarricense (Costa Rican Red Cross) responded to reports of his disappearance, initiating a search that involved multiple units, including rescue vehicles, medical personnel, drones with thermal cameras, and specialized equipment.  Despite establishing audio contact with the missing man, the search was suspended overnight due to poor weather conditions and darkness.
+The search resumed early Tuesday morning, and the man was found alive around 8:10 a.m. after over 10 hours of searching.  He was found injured, suffering from trauma to his face, hands, and legs.  Rescuers extracted him from the mountainous area and transported him to Hospital San Rafael de Alajuela for treatment.  The successful rescue concluded a major operation by the Cruz Roja, showcasing their efficient response to the emergency.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="inconsistencies-4" class="collapsible">
+                    <div class="inconsistencies-section">
+                        <div class="section-title">⚠️ Inconsistencies Found</div>
+
+                        <div class="inconsistency-item">
+                            Minor discrepancies exist in the exact time of the initial report and the resumption of the search, likely due to reporting differences across news outlets.
+                        </div>
+
+                        <div class="inconsistency-item">
+                            Some articles mention the man having experience in the mountains, while others don&#x27;t explicitly state this.
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="story-card has-inconsistencies">
+                <div class="story-header">
+                    <h2 class="story-title">Death of adult after motorcycle accident.</h2>
+                    <div>
+                        <span class="story-date">📅 2025-05-06</span>
+                        <span class="inconsistency-badge">⚠️ Has Inconsistencies</span>
+                    </div>
+                </div>
+                
+                <button class="toggle-button" onclick="toggleSection('articles-6')">
+                    👁️ Show/Hide Articles (2)
+                </button>
+                <button class="toggle-button" onclick="toggleSection('summary-6')">
+                    📄 Show/Hide Summary
+                </button>
+
+                <button class="toggle-button" onclick="toggleSection('inconsistencies-6')">
+                    ⚠️ Show/Hide Inconsistencies
+                </button>
+
+                <div id="articles-6" class="collapsible">
+                    <div class="articles-list">
+
+                        <div class="article-item">
+                            <div class="article-title">Adulto mayor muere en hospital tras accidente en moto</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-06T11:47 |
+                                Author: Fabiana Conejo
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/adulto-mayor-muere-en-hospital-tras-accidente-en-moto/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Motociclista muere en el hospital luego de accidente de tránsito en Escazú</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-06T17:47 |
+                                Author: Johan Rojas
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/motociclista-muere-en-el-hospital-luego-de-accidente-de-transito-en-escazu/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="summary-6" class="collapsible">
+                    <div class="summary-section">
+                        <div class="section-title">📋 Story Summary</div>
+                        <div class="summary-text">
+                            A 66-year-old man, identified by the last name Díaz, died at Hospital San Juan de Dios on May 6, 2025, after a motorcycle accident in Escazú.  The accident occurred on May 5th, and Mr. Díaz was transported to the hospital, where he succumbed to his injuries. The Organismo de Investigación Judicial (OIJ) is investigating the circumstances surrounding the accident and conducted the body&#x27;s removal for an autopsy.
+The incident involved a motorcycle accident in Escazú, resulting in the death of a 66-year-old male.  Emergency responders transported the victim to Hospital San Juan de Dios, where he ultimately passed away. The OIJ is handling the investigation, aiming to determine the precise cause of the accident and the events leading up to it. 
+                        </div>
+                    </div>
+                </div>
+
+                <div id="inconsistencies-6" class="collapsible">
+                    <div class="inconsistencies-section">
+                        <div class="section-title">⚠️ Inconsistencies Found</div>
+
+                        <div class="inconsistency-item">
+                            Article 1 states the death occurred on Tuesday (May 6th) while Article 2 states the death occurred on Monday (May 5th).  Article 1 mentions the accident happened on Monday, and the man was admitted to the hospital the same day, dying on Tuesday. Article 2 states the man died on Monday after the accident.  There appears to be a discrepancy in the reporting of the exact day of death.
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="story-card has-inconsistencies">
+                <div class="story-header">
+                    <h2 class="story-title">Death of 8-year-old child with injuries from apparent abuse (chilillazos)</h2>
+                    <div>
+                        <span class="story-date">📅 2025-05-07</span>
+                        <span class="inconsistency-badge">⚠️ Has Inconsistencies</span>
+                    </div>
+                </div>
+                
+                <button class="toggle-button" onclick="toggleSection('articles-32')">
+                    👁️ Show/Hide Articles (4)
+                </button>
+                <button class="toggle-button" onclick="toggleSection('summary-32')">
+                    📄 Show/Hide Summary
+                </button>
+
+                <button class="toggle-button" onclick="toggleSection('inconsistencies-32')">
+                    ⚠️ Show/Hide Inconsistencies
+                </button>
+
+                <div id="articles-32" class="collapsible">
+                    <div class="articles-list">
+
+                        <div class="article-item">
+                            <div class="article-title">OIJ investiga muerte de niño de 8 años con heridas por “chilillazos”, aparentemente con cable eléctrico</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-07T20:47 |
+                                Author: Daniel Córdoba
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/oij-investiga-muerte-de-nino-de-8-anos-con-heridas-por-chilillazos-aparentemente-con-cable-electrico/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Menor de 8 años fallecido presentaba “chilillazos” en el cuerpo</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T00:30 |
+                                Author: Allan Madriz
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/menor-de-8-anos-fallecido-presentaba-chilillazos-en-el-cuerpo/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Hermana de niño fallecido bajo sospecha de agresión quedó bajo protección del PANI</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-07T21:56 |
+                                Author: Rebeca Ballestero
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/hermana-de-nino-fallecido-bajo-sospecha-de-agresion-quedo-bajo-proteccion-del-pani/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Fiscalía señala presunto homicidio y estos otros delitos a padres de niño que murió con “chilillazos”</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-07T22:14 |
+                                Author: José Adelio Murillo
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/fiscalia-senala-presunto-homicidio-y-estos-otros-delitos-a-padres-de-nino-que-murio-con-chilillazos/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="summary-32" class="collapsible">
+                    <div class="summary-section">
+                        <div class="section-title">📋 Story Summary</div>
+                        <div class="summary-text">
+                            An 8-year-old boy died in Hospital San Juan de Dios in Costa Rica shortly after arrival, exhibiting injuries consistent with severe abuse, described as &quot;chilillazos&quot; (likely from a cord or electrical cable).  The OIJ (Organismo de Investigación Judicial) launched an investigation, discovering evidence of a violent assault at the family&#x27;s home, including blood spatter and stained clothing.  His 10-year-old sister, also found with injuries suggesting abuse, was placed in the care of the PANI (Patronato Nacional de la Infancia). 
+The parents, a Nicaraguan couple, were arrested and charged with aggravated homicide, assault, and neglect.  The investigation is ongoing, awaiting autopsy results to confirm the exact cause of death, but the evidence strongly suggests the boy&#x27;s death was the result of severe physical abuse at the hands of his parents.  The 52-year-old father, Alvarado, is named as the primary suspect.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="inconsistencies-32" class="collapsible">
+                    <div class="inconsistencies-section">
+                        <div class="section-title">⚠️ Inconsistencies Found</div>
+
+                        <div class="inconsistency-item">
+                            Article 2 mentions the arrest of a 52-year-old man surnamed Alvarado as the primary suspect, while other articles do not explicitly identify the father by name or age, although they reference the parents&#x27; arrest.
+                        </div>
+
+                        <div class="inconsistency-item">
+                            Minor variations exist in the details of the injuries and the descriptions of the evidence found in the home.  All articles report blood evidence but with slightly differing descriptions.
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="story-card has-inconsistencies">
+                <div class="story-header">
+                    <h2 class="story-title">Arrest of police officers for allegedly extorting money from a driver</h2>
+                    <div>
+                        <span class="story-date">📅 2025-05-07</span>
+                        <span class="inconsistency-badge">⚠️ Has Inconsistencies</span>
+                    </div>
+                </div>
+                
+                <button class="toggle-button" onclick="toggleSection('articles-33')">
+                    👁️ Show/Hide Articles (2)
+                </button>
+                <button class="toggle-button" onclick="toggleSection('summary-33')">
+                    📄 Show/Hide Summary
+                </button>
+
+                <button class="toggle-button" onclick="toggleSection('inconsistencies-33')">
+                    ⚠️ Show/Hide Inconsistencies
+                </button>
+
+                <div id="articles-33" class="collapsible">
+                    <div class="articles-list">
+
+                        <div class="article-item">
+                            <div class="article-title">Detienen a policías sospechosos de cobrar “peaje” de ₡30.000 a conductor en Guápiles</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-07T23:24 |
+                                Author: Mauricio León
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/detienen-a-policias-sospechosos-de-cobrar-peaje-de-%e2%82%a130-000-a-conductor-en-guapiles/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Caen 3 policías más por cobro de peaje</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T00:30 |
+                                Author: Allan Madriz
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/caen-3-policias-mas-por-cobro-de-peaje/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="summary-33" class="collapsible">
+                    <div class="summary-section">
+                        <div class="section-title">📋 Story Summary</div>
+                        <div class="summary-text">
+                            Three Fuerza Pública officers were arrested in La Rita, Guápiles, Costa Rica, for allegedly extorting ₡30,000 from a driver.  The officers, under investigation by the Organismo de Investigación Judicial (OIJ), are suspected of abusing their authority to collect an illegal “toll” from the motorist in April.  Following a formal complaint from the victim, the OIJ conducted surveillance, leading to the arrests and the seizure of the officers&#x27; cell phones as evidence.  The officers were presented to the Public Ministry to determine their legal status, while the Ministry of Public Security will decide on administrative actions.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="inconsistencies-33" class="collapsible">
+                    <div class="inconsistencies-section">
+                        <div class="section-title">⚠️ Inconsistencies Found</div>
+
+                        <div class="inconsistency-item">
+                            Article 2 mentions a broader series of arrests involving ten police officers across different locations (Pococí, Guácimo, and Guanacaste) over the past week, framing the Guápiles incident as one part of a larger pattern of illegal toll collection. Article 1 focuses solely on the Guápiles incident.
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="story-card has-inconsistencies">
+                <div class="story-header">
+                    <h2 class="story-title">Election of Pope Leo XIV</h2>
+                    <div>
+                        <span class="story-date">📅 2025-05-08</span>
+                        <span class="inconsistency-badge">⚠️ Has Inconsistencies</span>
+                    </div>
+                </div>
+                
+                <button class="toggle-button" onclick="toggleSection('articles-34')">
+                    👁️ Show/Hide Articles (27)
+                </button>
+                <button class="toggle-button" onclick="toggleSection('summary-34')">
+                    📄 Show/Hide Summary
+                </button>
+
+                <button class="toggle-button" onclick="toggleSection('inconsistencies-34')">
+                    ⚠️ Show/Hide Inconsistencies
+                </button>
+
+                <div id="articles-34" class="collapsible">
+                    <div class="articles-list">
+
+                        <div class="article-item">
+                            <div class="article-title">“Habemus papam”: sale humo blanco</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T10:08 |
+                                Author: Joel Rodriguez Rodriguez
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/habemus-papam-sale-humo-blanco/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Este es el primer mensaje del Papa León XIV</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T11:51 |
+                                Author: Joel Rodriguez Rodriguez
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/este-es-el-primer-mensaje-del-papa-leon-xiv/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Video: Así se anunció la elección del nuevo Papa</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T10:41 |
+                                Author: Joel Rodriguez Rodriguez
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/video-asi-se-anuncio-la-eleccion-del-nuevo-papa/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Transmisión en vivo: siga la presentación del nuevo papa</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T10:50 |
+                                Author: Johel Solano Castillo
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/transmision-en-vivo-siga-la-presentacion-del-nuevo-papa/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">(Video) Cónclave terminó: conozca al nuevo Papa</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T11:20 |
+                                Author: Fabiana Conejo
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/video-conclave-termino-conozca-al-nuevo-papa/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Extranjero fallece en hospital luego de ser atacado a golpes en riña</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T09:54 |
+                                Author: Joel Rodriguez Rodriguez
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/extranjero-fallece-en-hospital-luego-de-ser-atacado-a-golpes-en-rina/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">¡Humo blanco! Iglesia católica tiene nuevo papa</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T16:08 |
+                                Author: Gustavo Arias
+                            </div>
+                            <a href="https://www.crhoy.com/mundo/humo-blanco-iglesia-catolica-tiene-nuevo-papa/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">CCSS inicia proceso de modificar requisitos para solicitar pensión por vejez</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T16:50 |
+                                Author: Ambar Segura
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/ccss-inicia-proceso-de-modificar-requisitos-para-solicitar-pension-por-vejez/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">(VIDEO) Así sonaron las campanas de la Catedral Metropolitana al anuncio del nuevo papa</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T16:39 |
+                                Author: Daniel Córdoba
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/video-asi-sonaron-las-campanas-de-la-catedral-metropolitana-al-anuncio-del-nuevo-papa/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">En vivo: Entérese aquí quién será el nuevo papa de la Iglesia católica</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T16:43 |
+                                Author: Johan Rojas
+                            </div>
+                            <a href="https://www.crhoy.com/mundo/en-vivo-enterese-aqui-quien-sera-el-nuevo-papa-de-la-iglesia-catolica/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Habemus Papam: Robert Francis Prevost es el nuevo papa de la Iglesia Católica</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T17:15 |
+                                Author: Gustavo Arias
+                            </div>
+                            <a href="https://www.crhoy.com/mundo/habemus-papam-robert-francis-prevost-es-el-nuevo-papa-de-la-iglesia-catolica/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Así reaccionó la multitud en la plaza de San Pedro al anuncio del nuevo papa</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T16:56 |
+                                Author: Camila Castro
+                            </div>
+                            <a href="https://www.crhoy.com/mundo/asi-reacciono-la-multitud-en-la-plaza-de-san-pedro-al-anuncio-del-nuevo-papa/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">¿Limpia morada? Wanchope lanzó aviso tras clasificación</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T16:01 |
+                                Author: Adrián Mendoza
+                            </div>
+                            <a href="https://www.crhoy.com/deportes/limpia-morada-wanchope-lanzo-aviso-tras-clasificacion/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Atención florenses: esto vale una entrada para semifinales</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T16:43 |
+                                Author: Adrián Mendoza
+                            </div>
+                            <a href="https://www.crhoy.com/deportes/atencion-florenses-esto-vale-una-entrada-para-semifinales/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">¿Quién es Robert Francis Prevost, el nuevo papa León XIV?</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T17:17 |
+                                Author: Agencia
+                            </div>
+                            <a href="https://www.crhoy.com/mundo/quien-es-robert-francis-prevost-el-nuevo-papa-leon-xiv/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Video: San José vivió con alegría elección del nuevo Papa</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T16:18 |
+                                Author: Alejandro Fonseca
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/video-san-jose-vivio-con-alegria-eleccion-del-nuevo-papa/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Estos líderes mundiales han felicitado al papa León XIV por su elección</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T17:26 |
+                                Author: Gustavo Martínez
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/estos-lideres-mundiales-han-felicitado-al-papa-leon-xiv-por-su-eleccion/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Inteligencia suspende vigilancia a Alternativa para Alemania hasta fallo judicial</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T15:53 |
+                                Author: Agencia
+                            </div>
+                            <a href="https://www.crhoy.com/mundo/inteligencia-suspende-vigilancia-a-alternativa-para-alemania-hasta-fallo-judicial/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Transmisión en vivo: vea la segunda fumata del día en el Vaticano</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T08:24 |
+                                Author: Joel Rodriguez Rodriguez
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/transmision-en-vivo-vea-la-segunda-fumata-del-dia-en-el-vaticano/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">(VIDEO) Así fue el momento de la segunda fumata negra del cónclave</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T10:08 |
+                                Author: Agencia
+                            </div>
+                            <a href="https://www.crhoy.com/mundo/video-asi-fue-el-momento-de-la-segunda-fumata-negra-del-conclave/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Fotos: Las mejores 15 imágenes desde el Vaticano</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T12:26 |
+                                Author: Joel Rodriguez Rodriguez
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/fotos-las-mejores-15-imagenes-desde-el-vaticano/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Segunda fumata: Cónclave todavía no elige papa</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T09:52 |
+                                Author: Luis Valverde
+                            </div>
+                            <a href="https://www.crhoy.com/mundo/segunda-fumata-conclave-todavia-no-elige-papa/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Día 2 del cónclave: sale humo negro tras primera votación</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T03:51 |
+                                Author: Johel Solano Castillo
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/dia-2-del-conclave-sale-humo-negro-tras-primera-votacion/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Balacera en corredor: Matan a hombre de múltiples disparos</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T16:50 |
+                                Author: Gustavo Martínez
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/balacera-en-corredor-matan-a-hombre-de-multiples-disparos/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">(VIDEO) Detienen a dos personas sospechosas de golpear y apuñalar a un hombre hasta la muerte</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T12:54 |
+                                Author: Johan Rojas
+                            </div>
+                            <a href="https://www.crhoy.com/nacionales/video-detienen-a-dos-personas-sospechosas-de-golpear-y-apunalar-a-un-hombre-hasta-la-muerte/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Cardenales regresan a la Capilla Sixtina en el segundo día del cónclave</div>
+                            <div class="article-meta">
+                                <strong>www.crhoy.com</strong> | 
+                                2025-05-08T08:04 |
+                                Author: Agencia
+                            </div>
+                            <a href="https://www.crhoy.com/mundo/cardenales-regresan-a-la-capilla-sixtina-en-el-segundo-dia-del-conclave/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                        <div class="article-item">
+                            <div class="article-title">Perú de fiesta: “Es como si hubiésemos clasificado al mundial”</div>
+                            <div class="article-meta">
+                                <strong>www.diarioextra.com</strong> | 
+                                2025-05-08T12:35 |
+                                Author: Fabiana Conejo
+                            </div>
+                            <a href="https://www.diarioextra.com/noticia/peru-de-fiesta-es-como-si-hubiesemos-clasificado-al-mundial/" class="article-link" target="_blank">
+                                🔗 Read original article
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="summary-34" class="collapsible">
+                    <div class="summary-section">
+                        <div class="section-title">📋 Story Summary</div>
+                        <div class="summary-text">
+                            On May 8th, 2025, the world watched as white smoke billowed from the Sistine Chapel chimney, signaling the election of a new Pope.  After a conclave lasting over 25 hours, the cardinals selected Cardinal Robert Francis Prevost, an American-Peruvian, as the 267th Pope, taking the name Pope Leo XIV. This historic event marked the first time an American has been chosen as the head of the Catholic Church, generating global excitement and diverse reactions from world leaders.  His background, including significant pastoral experience in Latin America and leadership roles within the Vatican,  has been highlighted in reporting. 
+
+The election of Pope Leo XIV was met with widespread jubilation and celebration, particularly in his former diocese of Chiclayo, Peru, where his connection with the local community was celebrated.  Initial reports focused on the announcement of the election itself, with later articles detailing Pope Leo XIV&#x27;s first message emphasizing peace, dialogue, and inclusion.  News coverage included live streams, photos, and videos from the Vatican, along with reactions from various countries and prominent figures.  The news generated intense media interest worldwide and extensive coverage across multiple news sources.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="inconsistencies-34" class="collapsible">
+                    <div class="inconsistencies-section">
+                        <div class="section-title">⚠️ Inconsistencies Found</div>
+
+                        <div class="inconsistency-item">
+                            Minor discrepancies exist in the exact timing of the announcement in different time zones and across different articles. Some articles mention only a single black smoke signal before the white smoke, while others mention a second.
+                        </div>
+
+                        <div class="inconsistency-item">
+                            One article mentions a tender moment that captivated attention before the white smoke, without describing it.
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    
+    <script>
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

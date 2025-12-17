@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Toggle Bullet Points</title>
+  <style>
+    .paragraph {
+      display: none;
+      margin-left: 20px;
+    }
+
+    li {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <ul>
+    <li onclick="toggleParagraph(0)">Item 1</li>
+    <p class="paragraph">This is the paragraph for item 1.</p>
+
+    <li onclick="toggleParagraph(1)">Item 2</li>
+    <p class="paragraph">This is the paragraph for item 2.</p>
+
+    <li onclick="toggleParagraph(2)">Item 3</li>
+    <p class="paragraph">This is the paragraph for item 3.</p>
+  </ul>
+
+  <script>
+    function toggleParagraph(index) {
+      const paragraphs = document.querySelectorAll(".paragraph");
+      const para = paragraphs[index];
+      para.style.display = (para.style.display === "none" || para.style.display === "") ? "block" : "none";
+    }
+  </script>
+</body>
+</html>

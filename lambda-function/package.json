@@ -1,0 +1,14 @@
+{
+  "name": "spa-api-proxy",
+  "version": "1.0.0",
+  "description": "Lambda function to proxy Gemini API and Supabase queries",
+  "main": "index.js",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+

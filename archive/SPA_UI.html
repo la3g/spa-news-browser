@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>News Query Builder</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f9f9f9;
+    }
+    .builder {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .builder label {
+      display: block;
+      margin-top: 1rem;
+    }
+    .builder select,
+    .builder input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 0.25rem;
+    }
+    .builder button {
+      margin-top: 1.5rem;
+      padding: 10px 20px;
+      font-weight: bold;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    pre {
+      background: #eee;
+      padding: 1rem;
+      margin-top: 2rem;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="builder">
+  <h2>News Query Builder</h2>
+
+  <label for="category">Category</label>
+  <select id="category">
+    <option value="">-- Select Category --</option>
+    <option value="politics">Politics</option>
+    <option value="economy">Economy</option>
+    <option value="tech">Tech</option>
+    <option value="health">Health</option>
+  </select>
+
+  <label for="date">Date Range</label>
+  <select id="date">
+    <option value="">-- Select Date Range --</option>
+    <option value="24h">Last 24 Hours</option>
+    <option value="7d">Past Week</option>
+    <option value="30d">Past Month</option>
+  </select>
+
+  <label for="publisher">Publisher</label>
+  <select id="publisher">
+    <option value="">-- Select Publisher --</option>
+    <option value="delfino">Delfino.cr</option>
+    <option value="teletica">Teletica</option>
+    <option value="nacion">La Nación</option>
+  </select>
+
+  <label for="keywords">Search Keywords</label>
+  <input type="text" id="keywords" placeholder="e.g., Rodrigo Chaves prison plan" />
+
+  <button onclick="runQuery()">🔍 Search</button>
+
+  <pre id="output"></pre>
+</div>
+
+<script>
+  function runQuery() {
+    const category = document.getElementById('category').value;
+    const date = document.getElementById('date').value;
+    const publisher = document.getElementById('publisher').value;
+    const keywords = document.getElementById('keywords').value;
+
+    const result = {
+      category,
+      dateRange: date,
+      publisher,
+      freeText: keywords
+    };
+
+    document.getElementById('output').textContent = JSON.stringify(result, null, 2);
+  }
+</script>
+
+</body>
+</html>

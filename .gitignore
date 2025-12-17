@@ -1,0 +1,27 @@
+# Configuration file with sensitive keys
+config.js
+
+# Lambda deployment package
+function.zip
+
+# Environment variables
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node modules (if any)
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
