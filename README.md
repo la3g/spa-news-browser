@@ -50,6 +50,26 @@ Ensure you have:
 
 ### 2. Configure Environment Variables
 
+**Choose one or both depending on your use case:**
+
+#### Option A: Frontend Only (Local Testing)
+
+If you only want to test the frontend locally without Lambda:
+
+```bash
+cp config.js.example config.js
+# Edit config.js with your actual Supabase and Gemini API keys
+```
+
+**Frontend Configuration (`config.js`)** - Used by the browser SPA:
+- `SUPABASE_URL` - Your Supabase project URL
+- `SUPABASE_ANON_KEY` - Your Supabase anonymous key
+- `GEMINI_API_KEY` - Your Google Gemini API key
+
+#### Option B: Lambda Deployment Only
+
+If you only want to deploy the Lambda backend:
+
 ```bash
 cp .env.example .env
 # Edit .env with your actual values
@@ -62,17 +82,15 @@ cp .env.example .env
 - `AWS_PROFILE` - Your AWS profile name (optional, can pass as argument)
 - `AWS_REGION` - AWS region (optional, defaults to us-east-1)
 
-### 3. Configure Frontend Keys
+#### Option C: Full Stack (Recommended for Production)
+
+For a complete setup with both frontend and Lambda backend:
 
 ```bash
+cp .env.example .env
 cp config.js.example config.js
-# Edit config.js with your actual Supabase and Gemini API keys
+# Edit both files with your actual keys
 ```
-
-**Frontend Configuration (`config.js`)** - Used by the browser SPA:
-- `SUPABASE_URL` - Your Supabase project URL (for frontend direct access)
-- `SUPABASE_ANON_KEY` - Your Supabase anonymous key (for frontend direct access)
-- `GEMINI_API_KEY` - Your Google Gemini API key (for frontend direct access)
 
 **Why Two Configuration Files?**
 
@@ -83,15 +101,21 @@ cp config.js.example config.js
   - **Develop and debug** the SPA independently
   - **Use direct API calls** to Gemini and Supabase from the browser
 
-**Note:** In production, you can route all API calls through Lambda (which would only require Supabase keys in `config.js`), but keeping Gemini API key in `config.js` enables local testing and development without Lambda deployment.
+**When to Use Which:**
 
-### 4. Make Scripts Executable
+- **Only `config.js`** → For local frontend development/testing (no Lambda needed)
+- **Only `.env`** → For Lambda backend deployment only (frontend won't work without `config.js`)
+- **Both files** → For full production stack (Lambda backend + frontend)
+
+**In most cases:** Use `config.js` for frontend development, and add `.env` when you're ready to deploy Lambda.
+
+### 3. Make Scripts Executable
 
 ```bash
 chmod +x deploy.sh destroy.sh
 ```
 
-### 5. DNS Setup (One-Time)
+### 4. DNS Setup (One-Time)
 
 Before deploying, you need to delegate the subdomain to Route 53:
 
