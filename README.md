@@ -50,11 +50,11 @@ Ensure you have:
 
 ### 2. Configure Environment Variables
 
-**Choose one or both depending on your use case:**
+**Choose one option based on your use case:**
 
-#### Option A: Frontend Only (Local Testing)
+#### Option A: Local Testing (Frontend Only)
 
-If you only want to test the frontend locally without Lambda:
+For local frontend development and testing without Lambda:
 
 ```bash
 cp config.js.example config.js
@@ -66,9 +66,9 @@ cp config.js.example config.js
 - `SUPABASE_ANON_KEY` - Your Supabase anonymous key
 - `GEMINI_API_KEY` - Your Google Gemini API key
 
-#### Option B: Lambda Deployment Only
+#### Option B: Production (Lambda Deployment)
 
-If you only want to deploy the Lambda backend:
+For production deployment with Lambda backend:
 
 ```bash
 cp .env.example .env
@@ -82,32 +82,16 @@ cp .env.example .env
 - `AWS_PROFILE` - Your AWS profile name (optional, can pass as argument)
 - `AWS_REGION` - AWS region (optional, defaults to us-east-1)
 
-#### Option C: Full Stack (Recommended for Production)
-
-For a complete setup with both frontend and Lambda backend:
-
-```bash
-cp .env.example .env
-cp config.js.example config.js
-# Edit both files with your actual keys
-```
-
 **Why Two Configuration Files?**
 
 - **`.env`** - Used by the **Lambda backend** (server-side). The `deploy.sh` script reads this file and sets these as Lambda environment variables. Lambda functions use `process.env.*` to access these values.
 
-- **`config.js`** - Used by the **browser frontend** (client-side). Browsers cannot read `.env` files, so JavaScript configuration must be in a `.js` file. This allows you to:
-  - **Test the frontend locally** without deploying Lambda
-  - **Develop and debug** the SPA independently
-  - **Use direct API calls** to Gemini and Supabase from the browser
+- **`config.js`** - Used by the **browser frontend** (client-side). Browsers cannot read `.env` files, so JavaScript configuration must be in a `.js` file. This allows you to test the frontend locally without deploying Lambda.
 
 **When to Use Which:**
 
-- **Only `config.js`** → For local frontend development/testing (no Lambda needed)
-- **Only `.env`** → For Lambda backend deployment only (frontend won't work without `config.js`)
-- **Both files** → For full production stack (Lambda backend + frontend)
-
-**In most cases:** Use `config.js` for frontend development, and add `.env` when you're ready to deploy Lambda.
+- **Option A (`config.js` only)** → Local frontend development/testing (no Lambda needed)
+- **Option B (`.env` only)** → Production deployment with Lambda backend (frontend calls Lambda, not direct APIs)
 
 ### 3. Make Scripts Executable
 
